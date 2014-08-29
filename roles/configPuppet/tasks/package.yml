@@ -1,0 +1,4 @@
+- name: update puppet package
+  tags: 
+   - package
+  yum: name=puppet state=latest

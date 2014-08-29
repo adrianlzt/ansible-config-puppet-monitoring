@@ -1,0 +1,5 @@
+[pre]
+servidor1.ejemplo.com interface='eth1' vip='vip1.ejemplo.com' hostgroup='pacemaker','Jasper-Logfiles'
+servidor2.ejemplo.com
+servidor3.ejemplo.com
+servidor4.ejemplo.com

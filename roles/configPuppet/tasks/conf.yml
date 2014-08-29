@@ -1,0 +1,75 @@
+---
+- name: create facter directory
+  tags:
+    - conf
+  file: dest={{ facter_dir }} state=directory
+
+- name: delete old general.json, not used
+  tags:
+    - conf
+  file: dest="{{ facter_dir }}/general.json" state=absent
+
+  # Defimos los custom facts obligatorios
+- name: set custom fact to define if we have monitoring
+  tags:
+    - conf
+  template: src=monitoring.json.j2 dest="{{ facter_dir }}/monitoring.json"
+  register: result
+
+- name: set custom fact for project
+  tags:
+    - conf
+  template: src=project.json.j2 dest="{{ facter_dir }}/project.json"
+
+- name: set custom fact for environment
+  tags:
+    - conf
+  template: src=environment.json.j2 dest="{{ facter_dir }}/environment.json"
+
+  # Si el nodo no estaba puppetizado, conservamos los ficheros de nrpe
+  # En este caso no queremos lo que hay en nrpe.d, lo guardamos por si acaso
+  # En otro caso podriamos querer puppetizar solo el common y habria que dejar los comandos nrpe configurados anteriormente
+- name: move nrpe.d to nrpe.backup
+  tags:
+    - conf
+  command: cp -pr /etc/nrpe.d/ /etc/nrpe.backup/ creates=/etc/nrpe.backup
+  when: result.changed == True
+
+  # Definimos un custom fact para los hostgroups
+- name: set custom fact for hostgroups, if defined
+  tags:
+    - conf
+  template: src=hostgroup.json.j2 dest="{{ facter_dir }}/hostgroup.json"
+  when: hostgroup is defined
+ 
+- name: delete custom fact for hostgroups, if not defined
+  tags:
+    - conf
+  file: dest="{{ facter_dir }}/hostgroup.json" state=absent
+  when: hostgroup is not defined
+ 
+  # Definimos un custom fact para la interfaz
+- name: set custom fact for interface, if defined
+  tags:
+    - conf
+  template: src=interface.json.j2 dest="{{ facter_dir }}/interface.json"
+  when: interface is defined
+ 
+- name: delete custom fact for interface, if not defined
+  tags:
+    - conf
+  file: dest="{{ facter_dir }}/interface.json" state=absent
+  when: interface is not defined
+ 
+  # Definimos un custom fact para las vips
+- name: set custom fact for VIPs, if defined
+  tags:
+    - conf
+  template: src=vip.json.j2 dest="{{ facter_dir }}/vip.json"
+  when: vip is defined
+ 
+- name: delete custom fact for VIPs, if not defined
+  tags:
+    - conf
+  file: dest="{{ facter_dir }}/vip.json" state=absent
+  when: vip is not defined

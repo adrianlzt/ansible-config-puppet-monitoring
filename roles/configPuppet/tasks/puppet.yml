@@ -1,0 +1,7 @@
+- name: exec puppet agent
+  tags: 
+   - puppet
+  command: puppet agent -t --server={{ puppet_server }}
+  register: puppet
+  ignore_errors: True
+- debug: var=puppet

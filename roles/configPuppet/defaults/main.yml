@@ -1,0 +1,5 @@
+---
+# defaults file for configPuppet
+facter_dir: /etc/facter/facts.d
+puppet_server: puppet.ejemplo.com
+monitoring_activated: true

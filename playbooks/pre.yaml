@@ -1,0 +1,6 @@
+---
+- hosts: pre
+  sudo: True
+  gather_facts: False
+  roles:
+    - { role: configPuppet, project: 'smartbox', monitoring_env: 'pre' }
